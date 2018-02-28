@@ -554,7 +554,7 @@ IPC *NewIPC(CEDAR *cedar, char *client_name, char *postfix, char *hubname, char 
 	ipc->ArpTable = NewList(IPCCmpArpTable);
 
 	// Create an IPv4 reception queue
-	ipc->IPv4RecviedQueue = NewQueue();
+	ipc->IPv4ReceivedQueue = NewQueue();
 
 	return ipc;
 
@@ -594,7 +594,7 @@ IPC *NewIPCBySock(CEDAR *cedar, SOCK *s, void *mac_address)
 	ipc->ArpTable = NewList(IPCCmpArpTable);
 
 	// Create an IPv4 reception queue
-	ipc->IPv4RecviedQueue = NewQueue();
+	ipc->IPv4ReceivedQueue = NewQueue();
 
 	ipc->FlushList = NewTubeFlushList();
 
@@ -664,7 +664,7 @@ void FreeIPC(IPC *ipc)
 
 	while (true)
 	{
-		BLOCK *b = GetNext(ipc->IPv4RecviedQueue);
+		BLOCK *b = GetNext(ipc->IPv4ReceivedQueue);
 		if (b == NULL)
 		{
 			break;
@@ -673,7 +673,7 @@ void FreeIPC(IPC *ipc)
 		FreeBlock(b);
 	}
 
-	ReleaseQueue(ipc->IPv4RecviedQueue);
+	ReleaseQueue(ipc->IPv4ReceivedQueue);
 
 	Free(ipc);
 }
@@ -1619,7 +1619,7 @@ void IPCProcessL3EventsEx(IPC *ipc, UINT64 now)
 								IPCAssociateOnArpTable(ipc, &ip_src, src_mac);
 
 								// Place in the reception queue
-								InsertQueue(ipc->IPv4RecviedQueue, NewBlock(data, size, 0));
+								InsertQueue(ipc->IPv4ReceivedQueue, NewBlock(data, size, 0));
 							}
 							else
 							{
@@ -2079,7 +2079,7 @@ BLOCK *IPCRecvIPv4(IPC *ipc)
 		return NULL;
 	}
 
-	b = GetNext(ipc->IPv4RecviedQueue);
+	b = GetNext(ipc->IPv4ReceivedQueue);
 
 	return b;
 }
