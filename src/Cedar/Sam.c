@@ -132,7 +132,7 @@ void SecurePassword(void *secure_password, void *password, void *random)
 }
 
 // Generate 160bit random number
-void GenRamdom(void *random)
+void GenRandom(void *random)
 {
 	// Validate arguments
 	if (random == NULL)
