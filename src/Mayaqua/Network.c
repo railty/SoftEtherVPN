@@ -20686,7 +20686,7 @@ UINT GetUdpListenerPortList(UDPLISTENER *u, UINT **port_list)
 	return num_ports;
 }
 
-// Dekete all the UDP ports
+// Delete all the UDP ports
 void DeleteAllPortFromUdpListener(UDPLISTENER *u)
 {
 	// Validate arguments
