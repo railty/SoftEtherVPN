@@ -1848,7 +1848,7 @@ bool ServerAccept(CONNECTION *c)
 						Add(o, "p");
 						Add(o, "guest");
 						Add(o, "anony");
-						Add(o, "anonymouse");
+						Add(o, "anonymous");
 						Add(o, "password");
 						Add(o, "passwd");
 						Add(o, "pass");
