@@ -1449,7 +1449,7 @@ void IPCAssociateOnArpTable(IPC *ipc, IP *ip, UCHAR *mac_address)
 	}
 }
 
-// Identifiy whether the MAC address is a normal unicast address
+// Identify whether the MAC address is a normal unicast address
 bool IsValidUnicastMacAddress(UCHAR *mac)
 {
 	// Validate arguments
