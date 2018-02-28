@@ -348,7 +348,7 @@ namespace BuildUtil
 		public static readonly string ReleaseDir = Path.Combine(BaseDirName, @"tmp\Release");
 		public static readonly string ReleaseSrckitDir = Path.Combine(BaseDirName, @"tmp\ReleaseSrcKit");
 		public static readonly string StringsDir = Path.Combine(BaseDirName, @"BuildFiles\Strings");
-		public static readonly string CrossCompilerBaseDir = @"S:\CommomDev\xc";
+		public static readonly string CrossCompilerBaseDir = @"S:\CommonDev\xc";
 		public static readonly string UnixInstallScript = Path.Combine(BaseDirName, @"BuildFiles\UnixFiles\InstallScript.txt");
 		public static readonly string OssCommentsFile = Path.Combine(StringsDir, "OssComments.txt");
 		public static readonly string AutorunSrcDir = IO.NormalizePath(Path.Combine(BaseDirName, @"..\Autorun"));

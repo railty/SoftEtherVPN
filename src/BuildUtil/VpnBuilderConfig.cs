@@ -275,7 +275,7 @@ namespace BuildUtil
 		public static readonly BuildSoftware vpnserver_macos_ppc32_ja =
 			new BuildSoftwareUnix(Software.vpnserver, 0, 0, "", CpuList.ppc32, OSList.MacOS,
 				"macos-ppc-32bit", true, "macos-ppc-32bit-4.0.4", true,
-				"-isysroot /cygdrive/s/CommomDev/xc/common/apple_xcode/xcode_2.4/Developer/SDKs/MacOSX10.4u.sdk");
+				"-isysroot /cygdrive/s/CommonDev/xc/common/apple_xcode/xcode_2.4/Developer/SDKs/MacOSX10.4u.sdk");
 		public static readonly BuildSoftware vpnserver_macos_ppc64_ja =
 			new BuildSoftwareUnix(Software.vpnserver, 0, 0, "", CpuList.ppc64, OSList.MacOS,
 				"macos-ppc-64bit", true, "macos-ppc-64bit-4.0.4", true,
@@ -283,7 +283,7 @@ namespace BuildUtil
 		public static readonly BuildSoftware vpnserver_macos_x86_ja =
 			new BuildSoftwareUnix(Software.vpnserver, 0, 0, "", CpuList.x86, OSList.MacOS,
 				"macos-x86-32bit", true, "macos-x86-32bit-4.0.4", true,
-				"-isysroot /cygdrive/s/CommomDev/xc/common/apple_xcode/xcode_2.4/Developer/SDKs/MacOSX10.4u.sdk");
+				"-isysroot /cygdrive/s/CommonDev/xc/common/apple_xcode/xcode_2.4/Developer/SDKs/MacOSX10.4u.sdk");
 		public static readonly BuildSoftware vpnserver_macos_x64_ja =
 			new BuildSoftwareUnix(Software.vpnserver, 0, 0, "", CpuList.x64, OSList.MacOS,
 				"macos-x86-64bit", true, "macos-x86-64bit-4.0.4", true,
@@ -293,7 +293,7 @@ namespace BuildUtil
 		public static readonly BuildSoftware vpnclient_macos_ppc32_ja =
 			new BuildSoftwareUnix(Software.vpnclient, 0, 0, "", CpuList.ppc32, OSList.MacOS,
 				"macos-ppc-32bit", true, "macos-ppc-32bit-4.0.4", true,
-				"-isysroot /cygdrive/s/CommomDev/xc/common/apple_xcode/xcode_2.4/Developer/SDKs/MacOSX10.4u.sdk");
+				"-isysroot /cygdrive/s/CommonDev/xc/common/apple_xcode/xcode_2.4/Developer/SDKs/MacOSX10.4u.sdk");
 		public static readonly BuildSoftware vpnclient_macos_ppc64_ja =
 			new BuildSoftwareUnix(Software.vpnclient, 0, 0, "", CpuList.ppc64, OSList.MacOS,
 				"macos-ppc-64bit", true, "macos-ppc-64bit-4.0.4", true,
@@ -301,7 +301,7 @@ namespace BuildUtil
 		public static readonly BuildSoftware vpnclient_macos_x86_ja =
 			new BuildSoftwareUnix(Software.vpnclient, 0, 0, "", CpuList.x86, OSList.MacOS,
 				"macos-x86-32bit", true, "macos-x86-32bit-4.0.4", true,
-				"-isysroot /cygdrive/s/CommomDev/xc/common/apple_xcode/xcode_2.4/Developer/SDKs/MacOSX10.4u.sdk");
+				"-isysroot /cygdrive/s/CommonDev/xc/common/apple_xcode/xcode_2.4/Developer/SDKs/MacOSX10.4u.sdk");
 		public static readonly BuildSoftware vpnclient_macos_x64_ja =
 			new BuildSoftwareUnix(Software.vpnclient, 0, 0, "", CpuList.x64, OSList.MacOS,
 				"macos-x86-64bit", true, "macos-x86-64bit-4.0.4", true,
@@ -311,7 +311,7 @@ namespace BuildUtil
 		public static readonly BuildSoftware vpnbridge_macos_ppc32_ja =
 			new BuildSoftwareUnix(Software.vpnbridge, 0, 0, "", CpuList.ppc32, OSList.MacOS,
 				"macos-ppc-32bit", true, "macos-ppc-32bit-4.0.4", true,
-				"-isysroot /cygdrive/s/CommomDev/xc/common/apple_xcode/xcode_2.4/Developer/SDKs/MacOSX10.4u.sdk");
+				"-isysroot /cygdrive/s/CommonDev/xc/common/apple_xcode/xcode_2.4/Developer/SDKs/MacOSX10.4u.sdk");
 		public static readonly BuildSoftware vpnbridge_macos_ppc64_ja =
 			new BuildSoftwareUnix(Software.vpnbridge, 0, 0, "", CpuList.ppc64, OSList.MacOS,
 				"macos-ppc-64bit", true, "macos-ppc-64bit-4.0.4", true,
@@ -319,7 +319,7 @@ namespace BuildUtil
 		public static readonly BuildSoftware vpnbridge_macos_x86_ja =
 			new BuildSoftwareUnix(Software.vpnbridge, 0, 0, "", CpuList.x86, OSList.MacOS,
 				"macos-x86-32bit", true, "macos-x86-32bit-4.0.4", true,
-				"-isysroot /cygdrive/s/CommomDev/xc/common/apple_xcode/xcode_2.4/Developer/SDKs/MacOSX10.4u.sdk");
+				"-isysroot /cygdrive/s/CommonDev/xc/common/apple_xcode/xcode_2.4/Developer/SDKs/MacOSX10.4u.sdk");
 		public static readonly BuildSoftware vpnbridge_macos_x64_ja =
 			new BuildSoftwareUnix(Software.vpnbridge, 0, 0, "", CpuList.x64, OSList.MacOS,
 				"macos-x86-64bit", true, "macos-x86-64bit-4.0.4", true,
