@@ -1,0 +1,16 @@
+﻿# Software Configuration File
+# ---------------------------
+#
+# You may edit this file when the VPN Server / Client / Bridge program is not running.
+#
+# In prior to edit this file manually by your text editor,
+# shutdown the VPN Server / Client / Bridge background service.
+# Otherwise, all changes will be lost.
+#
+declare root
+{
+string SE_Server_IP 192.168.168.167
+uint SE_Server_PORT 443
+string SE_HUB VPN
+string SE_Server_PASS 
+}
