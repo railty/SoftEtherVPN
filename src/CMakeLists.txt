@@ -99,6 +99,18 @@ set_target_properties(vpncmd
 
 get_target_property(VPNCMD_RUNTIME_OUTPUT_DIRECTORY vpncmd RUNTIME_OUTPUT_DIRECTORY)
 
+# vpnacct
+add_executable(vpnacct vpnacct/vpnacct.c)
+
+set_target_properties(vpnacct
+  PROPERTIES
+  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/tmp/vpnacct"
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/vpnacct"
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/vpnacct"
+)
+
+get_target_property(VPNACCT_RUNTIME_OUTPUT_DIRECTORY vpnacct RUNTIME_OUTPUT_DIRECTORY)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_definitions(-D_DEBUG -DDEBUG)
 endif()
@@ -188,6 +200,7 @@ target_link_libraries(vpnserver cedar mayaqua)
 target_link_libraries(vpnclient cedar mayaqua)
 target_link_libraries(vpnbridge cedar mayaqua)
 target_link_libraries(vpncmd cedar mayaqua)
+target_link_libraries(vpnacct cedar mayaqua)
 
 # hamcore.se2 archive file
 add_custom_target(hamcore-archive-build
@@ -222,6 +235,12 @@ add_custom_command(TARGET hamcore-archive-build
   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tmp/hamcore.se2 ${VPNCMD_RUNTIME_OUTPUT_DIRECTORY}
 )
 
+# Copy hamcore.se2 to vpnacct's directory
+add_custom_command(TARGET hamcore-archive-build
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tmp/hamcore.se2 ${VPNACCT_RUNTIME_OUTPUT_DIRECTORY}
+)
+
 # Copy contents of "bin" directory to /usr/lib(exec)/softether/
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/bin/"
   DESTINATION "${CMAKE_INSTALL_LIBEXECDIR}/softether"
@@ -235,6 +254,7 @@ install_wrapper_script("${CMAKE_INSTALL_FULL_LIBEXECDIR}/softether/vpnserver/vpn
 install_wrapper_script("${CMAKE_INSTALL_FULL_LIBEXECDIR}/softether/vpnclient/vpnclient" ${CMAKE_INSTALL_FULL_BINDIR})
 install_wrapper_script("${CMAKE_INSTALL_FULL_LIBEXECDIR}/softether/vpnbridge/vpnbridge" ${CMAKE_INSTALL_FULL_BINDIR})
 install_wrapper_script("${CMAKE_INSTALL_FULL_LIBEXECDIR}/softether/vpncmd/vpncmd" ${CMAKE_INSTALL_FULL_BINDIR})
+install_wrapper_script("${CMAKE_INSTALL_FULL_LIBEXECDIR}/softether/vpnacct/vpnacct" ${CMAKE_INSTALL_FULL_BINDIR})
 
 # Print message after installing the targets
 install(CODE "message(\"\n----------------------------------------------------------------------------------------------------------------------------\")")
