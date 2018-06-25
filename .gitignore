@@ -8,4 +8,17 @@ src/bin/BuiltHamcoreFiles/
 tmp/
 .gitconfig
 
+#visual studio
+x64_Debug/
+x64_Release/
+Win32_Debug/
+Win32_Release/
+Obj/
+*.suo
+*.user
+*.ncb
 
+src/vpnacct/vpnacct.config
+src/vpnweb/vpnweb.h
+src/vpnweb/vpnweb_i.c
+src/vpnweb/vpnweb_p.c
