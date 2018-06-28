@@ -265,24 +265,29 @@ CLIENT_OPTION client_option;
 							"User-Name = '%s'\n"
 							"Calling-Station-Id = '%s'\n"
 							"Called-Station-Id = '%s'\n"
-							"Acct-Session-Id = '%s'\n"
+							"Acct-Session-Id = '%s-%u'\n"
 							"Framed-IP-Address = %s\n"
 							"Acct-Authentic = RADIUS\n"
 							"Event-Timestamp = %u\n"
 							"Acct-Session-Time = %u\n"
 							"Acct-Input-Octets = %s\n"
-							"Acct-Output-Octets = %s\n",
+							"Acct-Output-Octets = %s\n"
+							"Acct-Status-Type = Interim-Update\n"
+							"NAS-Identifier = '%s'\n"
+							"Acct-Delay-Time = 0\n"
+							"NAS-IP-Address = %s\n",
 							Endian32(session_status.NodeInfo.ServerPort), 
 							session_status.Username,
 							client_ip_str,
 							server_ip_str,
-							session_status.Name,
+							session_status.Name, session_status.Status.StartTime,
 							frame_ip_str,
 							now/1000,
-							//now_ts_str,
 							diff,
 							recv_str,
-							send_str
+							send_str,
+							server_ip_str,
+							server_ip_str
 							);
 						}
 					}
