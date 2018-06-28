@@ -268,7 +268,7 @@ CLIENT_OPTION client_option;
 							"Acct-Session-Id = '%s'\n"
 							"Framed-IP-Address = %s\n"
 							"Acct-Authentic = RADIUS\n"
-							"Event-Timestamp = %s\n"
+							"Event-Timestamp = %u\n"
 							"Acct-Session-Time = %u\n"
 							"Acct-Input-Octets = %s\n"
 							"Acct-Output-Octets = %s\n",
@@ -278,7 +278,8 @@ CLIENT_OPTION client_option;
 							server_ip_str,
 							session_status.Name,
 							frame_ip_str,
-							now_ts_str,
+							now/1000,
+							//now_ts_str,
 							diff,
 							recv_str,
 							send_str

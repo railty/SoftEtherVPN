@@ -431,6 +431,10 @@
 			RelativePath=".\vpnacct.config"
 			>
 		</File>
+		<File
+			RelativePath=".\vpnacct.config.example"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
