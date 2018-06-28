@@ -131,6 +131,136 @@
 #include <Mayaqua/Mayaqua.h>
 #include <Cedar/Cedar.h>
 
+int accounting(RPC *rpc, char *hub_name)
+{
+	UINT ret;
+	RPC_ENUM_IP_TABLE ip_table;
+
+	Zero(&ip_table, sizeof(ip_table));
+	StrCpy(ip_table.HubName, sizeof(ip_table.HubName), hub_name);
+
+	// RPC call
+	ret = ScEnumIpTable(rpc, &ip_table);
+
+	if (ret != ERR_NO_ERROR)
+	{
+		// An error has occured
+		return ret;
+	}
+	else
+	{
+		RPC_ENUM_SESSION enum_session;
+
+		Zero(&enum_session, sizeof(enum_session));
+		StrCpy(enum_session.HubName, sizeof(enum_session.HubName), hub_name);
+
+		// RPC call
+		ret = ScEnumSession(rpc, &enum_session);
+
+		if (ret != ERR_NO_ERROR)
+		{
+			return ret;
+		}
+		else
+		{
+			UINT i;
+			for (i = 0;i < enum_session.NumSession;i++)
+			{
+				RPC_SESSION_STATUS session_status;
+				RPC_ENUM_SESSION_ITEM *session_item = &enum_session.Sessions[i];
+
+				if (SearchStri(session_item->Name, "SID-LOCALBRIDGE", 0) == 0) continue;
+
+				Zero(&session_status, sizeof(session_status));
+				StrCpy(session_status.HubName, sizeof(session_status.HubName), hub_name);
+				StrCpy(session_status.Name, sizeof(session_status.Name), session_item->Name);
+
+				// RPC call
+				ret = ScGetSessionStatus(rpc, &session_status);
+
+				if (ret != ERR_NO_ERROR)
+				{
+					return ret;
+				}
+				else
+				{
+					UINT frame_ip = 0;
+					UINT k;
+					for (k = 0;k < ip_table.NumIpTable;k++)
+					{
+						RPC_ENUM_IP_TABLE_ITEM *ip_table_item = &ip_table.IpTables[k];
+						if (StrCmpi(ip_table_item->SessionName, session_item->Name) == 0)
+						{
+							frame_ip = ip_table_item->Ip;
+							break;
+						}
+					}
+					if (frame_ip!=0)
+					{
+						UINT64 now;
+						UINT diff;
+						char recv_str[128];
+						char send_str[128];
+						char now_str[MAX_SIZE];
+						char starttm_str[MAX_SIZE];
+						char frame_ip_str[20];
+						char client_ip_str[20];
+						char server_ip_str[20];
+						IPToStr32(frame_ip_str, sizeof(frame_ip_str), frame_ip);
+						IPToStr32(server_ip_str, sizeof(server_ip_str), session_status.NodeInfo.ServerIpAddress);
+						IPToStr32(client_ip_str, sizeof(client_ip_str), session_status.ClientIp);
+
+						now = Tick64ToTime64(Tick64());
+						ToStr64(now_str, now/1000);
+
+						diff = (UINT)(now - session_status.Status.StartTime) / 1000;
+						ToStr64(starttm_str, session_status.Status.StartTime);
+
+						ToStr64(recv_str, session_status.Status.TotalRecvSize);
+						ToStr64(send_str, session_status.Status.TotalSendSize);
+
+						printf(
+						"Service-Type = Framed-User\n"
+						"Framed-Protocol = PPP\n"
+						"NAS-Port = %u\n"
+						"NAS-Port-Type = Async\n"
+						"User-Name = '%s'\n"
+						"Calling-Station-Id = '%s'\n"
+						"Called-Station-Id = '%s'\n"
+						"Acct-Session-Id = '%s-%s'\n"
+						"Framed-IP-Address = %s\n"
+						"Acct-Authentic = RADIUS\n"
+						"Event-Timestamp = %s\n"
+						"Acct-Session-Time = %u\n"
+						"Acct-Input-Octets = %s\n"
+						"Acct-Output-Octets = %s\n"
+						"Acct-Status-Type = Interim-Update\n"
+						"NAS-Identifier = '%s'\n"
+						"Acct-Delay-Time = 0\n"
+						"NAS-IP-Address = %s\n\n",
+						Endian32(session_status.NodeInfo.ServerPort), 
+						session_status.Username,
+						client_ip_str,
+						server_ip_str,
+						session_status.Name, starttm_str,
+						frame_ip_str,
+						now_str,
+						diff,
+						recv_str,
+						send_str,
+						server_ip_str,
+						server_ip_str
+						);
+					}
+				}
+				FreeRpcSessionStatus(&session_status);
+			}
+		}
+		FreeRpcEnumSession(&enum_session);
+	}
+	FreeRpcEnumIpTable(&ip_table);
+	return ret;
+}
 // main function
 int main(int argc, char *argv[])
 {
@@ -138,9 +268,15 @@ UINT ret = 0;
 UINT err;
 CEDAR *cedar;
 
+UINT sleep_time = 5; //seconds
 FOLDER *config;
 char server_ip[20];
 char server_pass[20];
+
+char mode[20]; //radclient for now, radapi, mysql direct later
+char radius_server[20];
+char radius_secret[20];
+
 char hub_name[20];
 UINT server_port;
 UCHAR hashed_server_pass[SHA1_SIZE];
@@ -162,6 +298,11 @@ CLIENT_OPTION client_option;
 	server_port = CfgGetInt(config, "SE_Server_PORT");
 	CfgGetStr(config, "SE_HUB", hub_name, 20);
 	CfgGetStr(config, "SE_Server_PASS", server_pass, 20);
+	sleep_time = CfgGetInt(config, "Sleep");
+
+	CfgGetStr(config, "Mode", mode, 20);
+	CfgGetStr(config, "Radius_Server", radius_server, 20);
+	CfgGetStr(config, "Radius_Secret", radius_secret, 20);
 
 	Hash((void*)hashed_server_pass, server_pass, StrLen(server_pass), true);
 
@@ -175,131 +316,12 @@ CLIENT_OPTION client_option;
 
 	if (rpc != NULL)
 	{
-		RPC_ENUM_IP_TABLE ip_table;
-
-		Zero(&ip_table, sizeof(ip_table));
-		StrCpy(ip_table.HubName, sizeof(ip_table.HubName), hub_name);
-
-		// RPC call
-		ret = ScEnumIpTable(rpc, &ip_table);
-
-		if (ret != ERR_NO_ERROR)
+		for (;;)
 		{
-			// An error has occured
-			return ret;
+			ret = accounting(rpc, hub_name);
+			SleepThread(sleep_time*1000);
 		}
-		else
-		{
-			RPC_ENUM_SESSION enum_session;
-
-			Zero(&enum_session, sizeof(enum_session));
-			StrCpy(enum_session.HubName, sizeof(enum_session.HubName), hub_name);
-
-			// RPC call
-			ret = ScEnumSession(rpc, &enum_session);
-
-			if (ret != ERR_NO_ERROR)
-			{
-				return ret;
-			}
-			else
-			{
-				UINT i;
-				for (i = 0;i < enum_session.NumSession;i++)
-				{
-					RPC_SESSION_STATUS session_status;
-					RPC_ENUM_SESSION_ITEM *session_item = &enum_session.Sessions[i];
-
-					if (SearchStri(session_item->Name, "SID-LOCALBRIDGE", 0) == 0) continue;
-
-					Zero(&session_status, sizeof(session_status));
-					StrCpy(session_status.HubName, sizeof(session_status.HubName), hub_name);
-					StrCpy(session_status.Name, sizeof(session_status.Name), session_item->Name);
-
-					// RPC call
-					ret = ScGetSessionStatus(rpc, &session_status);
-
-					if (ret != ERR_NO_ERROR)
-					{
-						return ret;
-					}
-					else
-					{
-						UINT frame_ip = 0;
-						UINT k;
-						for (k = 0;k < ip_table.NumIpTable;k++)
-						{
-							RPC_ENUM_IP_TABLE_ITEM *ip_table_item = &ip_table.IpTables[k];
-							if (StrCmpi(ip_table_item->SessionName, session_item->Name) == 0)
-							{
-								frame_ip = ip_table_item->Ip;
-								break;
-							}
-						}
-						if (frame_ip!=0)
-						{
-							UINT64 now;
-							UINT diff;
-							char recv_str[128];
-							char send_str[128];
-							char now_str[MAX_SIZE];
-							char starttm_str[MAX_SIZE];
-							char frame_ip_str[20];
-							char client_ip_str[20];
-							char server_ip_str[20];
-							IPToStr32(frame_ip_str, sizeof(frame_ip_str), frame_ip);
-							IPToStr32(server_ip_str, sizeof(server_ip_str), session_status.NodeInfo.ServerIpAddress);
-							IPToStr32(client_ip_str, sizeof(client_ip_str), session_status.ClientIp);
-
-							now = Tick64ToTime64(Tick64());
-							ToStr64(now_str, now/1000);
-
-							diff = (UINT)(now - session_status.Status.StartTime) / 1000;
-							ToStr64(starttm_str, session_status.Status.StartTime);
-
-							ToStr64(recv_str, session_status.Status.TotalRecvSize);
-							ToStr64(send_str, session_status.Status.TotalSendSize);
-
-							printf(
-							"Service-Type = Framed-User\n"
-							"Framed-Protocol = PPP\n"
-							"NAS-Port = %u\n"
-							"NAS-Port-Type = Async\n"
-							"User-Name = '%s'\n"
-							"Calling-Station-Id = '%s'\n"
-							"Called-Station-Id = '%s'\n"
-							"Acct-Session-Id = '%s-%s'\n"
-							"Framed-IP-Address = %s\n"
-							"Acct-Authentic = RADIUS\n"
-							"Event-Timestamp = %s\n"
-							"Acct-Session-Time = %u\n"
-							"Acct-Input-Octets = %s\n"
-							"Acct-Output-Octets = %s\n"
-							"Acct-Status-Type = Interim-Update\n"
-							"NAS-Identifier = '%s'\n"
-							"Acct-Delay-Time = 0\n"
-							"NAS-IP-Address = %s\n",
-							Endian32(session_status.NodeInfo.ServerPort), 
-							session_status.Username,
-							client_ip_str,
-							server_ip_str,
-							session_status.Name, starttm_str,
-							frame_ip_str,
-							now_str,
-							diff,
-							recv_str,
-							send_str,
-							server_ip_str,
-							server_ip_str
-							);
-						}
-					}
-					FreeRpcSessionStatus(&session_status);
-				}
-			}
-			FreeRpcEnumSession(&enum_session);
-		}
-		FreeRpcEnumIpTable(&ip_table);
+		
 		AdminDisconnect(rpc);
 	}
 

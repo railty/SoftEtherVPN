@@ -13,4 +13,8 @@ string SE_Server_IP 192.168.168.167
 uint SE_Server_PORT 443
 string SE_HUB VPN
 string SE_Server_PASS 
+uint Sleep 5
+string Mode radclient
+string Radius_Server localhost:1813 
+string Radius_Secret
 }
