@@ -242,7 +242,8 @@ CLIENT_OPTION client_option;
 							UINT diff;
 							char recv_str[128];
 							char send_str[128];
-							char now_ts_str[MAX_SIZE];
+							char now_str[MAX_SIZE];
+							char starttm_str[MAX_SIZE];
 							char frame_ip_str[20];
 							char client_ip_str[20];
 							char server_ip_str[20];
@@ -251,8 +252,10 @@ CLIENT_OPTION client_option;
 							IPToStr32(client_ip_str, sizeof(client_ip_str), session_status.ClientIp);
 
 							now = Tick64ToTime64(Tick64());
-							GetDateTimeStr64(now_ts_str, sizeof(now_ts_str), SystemToLocal64(now));
+							ToStr64(now_str, now/1000);
+
 							diff = (UINT)(now - session_status.Status.StartTime) / 1000;
+							ToStr64(starttm_str, session_status.Status.StartTime);
 
 							ToStr64(recv_str, session_status.Status.TotalRecvSize);
 							ToStr64(send_str, session_status.Status.TotalSendSize);
@@ -265,10 +268,10 @@ CLIENT_OPTION client_option;
 							"User-Name = '%s'\n"
 							"Calling-Station-Id = '%s'\n"
 							"Called-Station-Id = '%s'\n"
-							"Acct-Session-Id = '%s-%u'\n"
+							"Acct-Session-Id = '%s-%s'\n"
 							"Framed-IP-Address = %s\n"
 							"Acct-Authentic = RADIUS\n"
-							"Event-Timestamp = %u\n"
+							"Event-Timestamp = %s\n"
 							"Acct-Session-Time = %u\n"
 							"Acct-Input-Octets = %s\n"
 							"Acct-Output-Octets = %s\n"
@@ -280,9 +283,9 @@ CLIENT_OPTION client_option;
 							session_status.Username,
 							client_ip_str,
 							server_ip_str,
-							session_status.Name, session_status.Status.StartTime,
+							session_status.Name, starttm_str,
 							frame_ip_str,
-							now/1000,
+							now_str,
 							diff,
 							recv_str,
 							send_str,
@@ -303,7 +306,7 @@ CLIENT_OPTION client_option;
 	ReleaseCedar(cedar);
 	FreeCedar();
 	FreeMayaqua();
-	getchar();
+	//getchar();
 	return ret;
 }
 
