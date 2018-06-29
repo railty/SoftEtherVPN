@@ -1,0 +1,13 @@
+[Unit]
+Description=vpnacct accounting
+
+[Service]
+WorkingDirectory=/home/sning/vpnacct
+StandardInput=null
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=%n
+#KillMode=mixed
+#TimeoutStopSec=600
+
+ExecStart=/bin/sh -c '/home/sning/vpnacct/vpnacct | radclient localhost:1813 acct vpnhub.center'
