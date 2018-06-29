@@ -316,11 +316,11 @@ CLIENT_OPTION client_option;
 
 	if (rpc != NULL)
 	{
-		for (;;)
-		{
+		//for (;;)
+		//{
 			ret = accounting(rpc, hub_name);
-			SleepThread(sleep_time*1000);
-		}
+//			SleepThread(sleep_time*1000);
+		//}
 		
 		AdminDisconnect(rpc);
 	}
