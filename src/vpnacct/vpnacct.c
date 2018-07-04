@@ -198,7 +198,7 @@ int accounting(RPC *rpc, char *hub_name)
 					if (frame_ip!=0)
 					{
 						UINT64 now;
-						UINT diff;
+						UINT ts, diff;
 						char recv_str[128];
 						char send_str[128];
 						char now_str[MAX_SIZE];
@@ -210,9 +210,8 @@ int accounting(RPC *rpc, char *hub_name)
 						IPToStr32(server_ip_str, sizeof(server_ip_str), session_status.NodeInfo.ServerIpAddress);
 						IPToStr32(client_ip_str, sizeof(client_ip_str), session_status.ClientIp);
 
+						ts = (UINT)time(NULL);
 						now = Tick64ToTime64(Tick64());
-						ToStr64(now_str, now/1000);
-
 						diff = (UINT)(now - session_status.Status.StartTime) / 1000;
 						ToStr64(starttm_str, session_status.Status.StartTime);
 
