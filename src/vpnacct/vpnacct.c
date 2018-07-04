@@ -229,7 +229,7 @@ int accounting(RPC *rpc, char *hub_name)
 						"Acct-Session-Id = '%s-%s'\n"
 						"Framed-IP-Address = %s\n"
 						"Acct-Authentic = RADIUS\n"
-						"Event-Timestamp = %s\n"
+						"Event-Timestamp = %u\n"
 						"Acct-Session-Time = %u\n"
 						"Acct-Input-Octets = %s\n"
 						"Acct-Output-Octets = %s\n"
@@ -243,7 +243,7 @@ int accounting(RPC *rpc, char *hub_name)
 						server_ip_str,
 						session_status.Name, starttm_str,
 						frame_ip_str,
-						now_str,
+						ts,
 						diff,
 						recv_str,
 						send_str,
