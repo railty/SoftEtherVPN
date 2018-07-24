@@ -170,6 +170,8 @@ int accounting(RPC *rpc, char *hub_name)
 				RPC_ENUM_SESSION_ITEM *session_item = &enum_session.Sessions[i];
 
 				if (SearchStri(session_item->Name, "SID-LOCALBRIDGE", 0) == 0) continue;
+				if (SearchStri(session_item->Name, "SID-SECURENAT", 0) == 0) continue;
+				
 
 				Zero(&session_status, sizeof(session_status));
 				StrCpy(session_status.HubName, sizeof(session_status.HubName), hub_name);
